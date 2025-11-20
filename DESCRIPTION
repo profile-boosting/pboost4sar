@@ -1,0 +1,15 @@
+Package: pboostsam
+Title: Profile Boosting Feature Selection for Spatial Autoregressive Model
+Version: 0.1.0
+Authors@R: 
+    person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    pboost,
+    spatialreg,
+    spdep,
+    stats

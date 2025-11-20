@@ -1,0 +1,140 @@
+#' @name pboostsam
+#' 
+#' @title Profile Boosting Feature Selection for Spatial Autoregressive Model
+#' @description Profile Boosting Feature Selection for Spatial Autoregressive Model
+#' 
+#' @param formula Parameters passed to [spatialreg::lagsarlm].
+#' @param data Parameters passed to [spatialreg::lagsarlm].
+#' @param listw Parameters passed to [spatialreg::lagsarlm].
+#' @param na.action Parameters passed to [spatialreg::lagsarlm].
+#' @param Durbin Parameters passed to [spatialreg::lagsarlm].
+#' @param type Parameters passed to [spatialreg::lagsarlm].
+#' @param method Parameters passed to [spatialreg::lagsarlm].
+#' @param quiet Parameters passed to [spatialreg::lagsarlm].
+#' @param zero.policy Parameters passed to [spatialreg::lagsarlm].
+#' @param interval Parameters passed to [spatialreg::lagsarlm].
+#' @param tol.solve Parameters passed to [spatialreg::lagsarlm].
+#' @param trs Parameters passed to [spatialreg::lagsarlm].
+#' @param control Parameters passed to [spatialreg::lagsarlm].
+#' @param stopFun Stopping rule for profile boosting, which has the form
+#'  stopFun(object) to evaluate the performance of model object returned
+#'  by fitFun, such as [EBIC] or [BIC].
+#' @param maxK Maximal number of identified features. 
+#' If `maxK` is specified, it will supress `stopFun`, saying that the 
+#' profile boosting continues until the procedure identifies `maxK` features.
+#' The pre-specified features in `keep` are counted toward `maxK`.
+#' @param keep Initial set of features that are included in model fitting.
+#' **If `keep` is specified, it should also be fully included in the RHS of `formula`.**
+#' @param verbose Print the procedure path?
+#' 
+#' @return Model object fitted on the selected features.
+#' 
+#' @examples
+#' library(spdep)
+#' library(spatialreg)
+#' 
+#' set.seed(2025)
+#' b0 <- c(1.5, 3.0, 2.0, rep(0.0, 3))
+#' rho0 <- 0.2
+#' sig0 <- 1.0
+#' n <- 81
+#' 
+#' DF <- simu_sam_data_rook(b0, rho0, sig0, n)
+#' 
+#' data <- with(DF, data.frame(y, X))
+#' W0 <- DF[["W0"]]
+#' ( result <- pboostsam(y ~ ., data, mat2listw(W0, style="W"), verbose=TRUE) )
+#' 
+#' 
+NULL
+#> NULL
+
+
+
+#' @rdname pboostsam
+#' @order 1
+#' @export
+pboostsam <- function(
+    formula, data = list(), listw, na.action, Durbin, type,
+    method = "eigen", quiet = NULL, zero.policy = NULL, interval = NULL,
+    tol.solve = .Machine$double.eps, trs = NULL, control = list(),
+    stopFun = EBIC, keep = NULL, maxK = NULL, verbose = FALSE) {
+
+    # # --- 方案 1 ---
+    # lagsarlm_args <- names(formals(spatialreg::lagsarlm)) # 或 spdep::lagsarlm，取决于你用的包
+
+    # # 在 pboostsam 中：
+    # user_args <- as.list(environment())
+    # args_for_lagsarlm <- user_args[intersect(names(user_args), lagsarlm_args)]
+
+
+    # # --- 方案 2 ---
+    # cl <- match.call()
+    # cl[[1L]] <- quote(lagsarlm)
+
+    # # 创建一个包含所有参数值的环境
+    # call_env <- as.environment(as.list(environment()))
+
+
+    # lagsarlmArgs <- names(formals(spatialreg::lagsarlm))
+    # callArgs <- as.list(sam_template)[intersect(names(as.list(sam_template)), lagsarlmArgs)]
+
+    # fitFun <- function(formula, data) {
+    #     cl$formula <- formula
+    #     cl$data <- data
+    #     eval(cl, envir = call_env)  # ✅ 在参数已求值的环境中执行
+    # }
+
+    # --- END ---
+
+    cl <- match.call(expand.dots = TRUE)
+    sam_template <- cl
+    sam_template$stopFun <- NULL
+    sam_template$keep <- NULL
+    sam_template$maxK <- NULL
+    sam_template$verbose <- NULL
+    sam_template[[1L]] <- quote(lagsarlm)
+    fitFun <- function(formula, data){
+        call <- sam_template
+        call$formula <- formula
+        return( eval(call, parent.frame()) )
+    }
+
+
+    return(pboost(formula, data, fitFun, residuals, stopFun,
+                  keep=keep, maxK=maxK, verbose=verbose))
+
+}
+
+
+#' @title Extended BIC for SAM
+#' @description EBIC for spatial autoregressive model.
+#' 
+#' @param object See [pboost::EBIC].
+#' @param p See [pboost::EBIC].
+#' @param p.keep See [pboost::EBIC].
+#' @param ... See [pboost::EBIC].
+#' 
+#' @return EBIC value.
+#' 
+#' @export
+EBIC.Sarlm <- function(object, p, p.keep, ...) {
+    stopifnot( inherits(object, "Sarlm") )
+
+    if (missing(p))
+        p <- get("p", envir=parent.frame())
+    if (missing(p.keep))
+        p.keep <- get("p.keep", envir=parent.frame())
+
+    dof <- attr(logLik(object), "df")
+    n0 <- attr(logLik(object), "nobs")
+    ebic.r <- max( 0.0, 1.0 - log(n0) / (2.0*log(p)) )
+    ebic.penalty <- ifelse(
+        ebic.r <= 0.0,
+        0.0,
+        2.0 * ebic.r * lchoose(p - p.keep, dof - p.keep)
+    )
+
+    stopifnot( is.finite(ebic.penalty) )
+    return(BIC(object) + ebic.penalty)
+}
