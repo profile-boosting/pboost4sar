@@ -2,9 +2,13 @@
 % Please edit documentation in R/simu-sam-data.R
 \name{simu_sam_data_rook}
 \alias{simu_sam_data_rook}
+\alias{simu_sam_data_case}
+\alias{simu-data}
 \title{Simulate Data}
 \usage{
 simu_sam_data_rook(b0, rho0, sig0, n)
+
+simu_sam_data_case(b0, rho0, sig0, m, R = 8)
 }
 \arguments{
 \item{b0}{True vector of \eqn{\beta_0}.
@@ -19,7 +23,17 @@ simu_sam_data_rook(b0, rho0, sig0, n)
 \item{sig0}{\eqn{\sigma_0} for \eqn{\varepsilon}.}
 
 \item{n}{Sample size.}
+
+\item{m}{In Case spatial weight matrix, \eqn{W = I_R \otimes B_m}.}
+
+\item{R}{In Case spatial weight matrix, \eqn{W = I_R \otimes B_m}.}
+}
+\value{
+\code{list(y, X, W0, s0)}.
 }
 \description{
-Rook weight matrix.
+\itemize{
+\item \code{simu_sam_data_rook}: Rook weight matrix.
+\item \code{simu_sam_data_case}: Case weight matrix.
+}
 }
