@@ -60,21 +60,17 @@ pboostsam <- function(
     tol.solve = .Machine$double.eps, trs = NULL, control = list(),
     stopFun = EBIC, keep = NULL, maxK = NULL, verbose = FALSE) {
 
-    # # --- 方案 1 ---
+    # # --- solution A ---
     # lagsarlm_args <- names(formals(spatialreg::lagsarlm)) # 或 spdep::lagsarlm，取决于你用的包
-
-    # # 在 pboostsam 中：
     # user_args <- as.list(environment())
     # args_for_lagsarlm <- user_args[intersect(names(user_args), lagsarlm_args)]
 
 
-    # # --- 方案 2 ---
+    # # --- solution B ---
     # cl <- match.call()
     # cl[[1L]] <- quote(lagsarlm)
 
-    # # 创建一个包含所有参数值的环境
     # call_env <- as.environment(as.list(environment()))
-
 
     # lagsarlmArgs <- names(formals(spatialreg::lagsarlm))
     # callArgs <- as.list(sam_template)[intersect(names(as.list(sam_template)), lagsarlmArgs)]
@@ -82,7 +78,7 @@ pboostsam <- function(
     # fitFun <- function(formula, data) {
     #     cl$formula <- formula
     #     cl$data <- data
-    #     eval(cl, envir = call_env)  # ✅ 在参数已求值的环境中执行
+    #     eval(cl, envir = call_env)
     # }
 
     # --- END ---
@@ -100,11 +96,26 @@ pboostsam <- function(
         return( eval(call, parent.frame()) )
     }
 
+    # scoreFun <- function(object) {
+    #     stopifnot( inherits(object, "Sarlm") )
 
-    return(pboost(formula, data, fitFun, residuals, stopFun,
-                  keep=keep, maxK=maxK, verbose=verbose))
+    #     n0 <- attr(logLik(object), "nobs")
+    #     rho <- get(object, "rho")
 
+    #     eta <- rep(coef(object)["(Intercept)"], n0)
+    #     vnames <- names(coef(object))[-(1:2)]
+    #     if (length(vnames) > 0)
+    #         eta <- eta + as.matrix(data[, vnames, drop=FALSE]) %*% coef(object)[vnames]
+
+    #     ## explicitly call `y` from `data`
+    #     drop( (diag(n0) - rho * W0) %*% data$y ) - eta
+    # }
+
+    pboost(formula, data, fitFun, residuals, stopFun,
+           keep=keep, maxK=maxK, verbose=verbose)
 }
+
+
 
 
 #' @title Extended BIC for SAM
@@ -136,5 +147,5 @@ EBIC.Sarlm <- function(object, p, p.keep, ...) {
     )
 
     stopifnot( is.finite(ebic.penalty) )
-    return(BIC(object) + ebic.penalty)
+    BIC(object) + ebic.penalty
 }
