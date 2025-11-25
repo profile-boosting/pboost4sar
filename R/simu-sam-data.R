@@ -29,21 +29,18 @@ simu_sam_data_rook <- function(b0, rho0, sig0, n) {
     p <- length(b0)
     X <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
 
-    # W0 <- matrix(0.0, n, n)
-    # diag(W0[2:n, 1:(n-1)]) <- diag(W0[1:(n-1), 2:n]) <- 1.0
-    swmrook<-function(num){
-        Wr<-matrix(0,ncol=num,nrow=num)
-        up<-sqrt(num)
-        dw<-num-sqrt(num)+1
-        for(i in 1:num){
-            if(i>up) Wr[i,i-up]=1##上边相邻的单元
-            if(i<dw) Wr[i,i+up]=1##下面相邻的单元
-            if(i%%up!=1) Wr[i,i-1]=1##左边相邻单元
-            if(i%%up!=0) Wr[i,i+1]=1##右边相邻单元
-        }
-        return(Wr)
+    set_rook_matrix <- function(rNum, cNum=rNum){
+        idxR <- as.vector( row(matrix(NA, rNum, cNum)) )
+        idxC <- as.vector( col(matrix(NA, rNum, cNum)) )
+
+        (
+            ( outer(idxR, idxR, \(i, j) i == j) &
+                outer(idxC, idxC, \(i, j) abs(i - j) == 1) ) |
+            ( outer(idxC, idxC, \(i, j) i == j) &
+                outer(idxR, idxR, \(i, j) abs(i - j) == 1) )
+        ) + 0.0
     }
-    W0 <- swmrook(n)
+    W0 <- set_rook_matrix(n)
     W0 <- W0 / rowSums(W0)
 
     y <- solve(diag(n) - rho0*W0, as.matrix(X) %*% b0 + rnorm(n, sd=sig0))
