@@ -1,7 +1,7 @@
 #' @name simu-data
 #' @title Simulate Data
 #' 
-#' @description 
+#' @description
 #' - `simu_sam_data_rook`: Rook weight matrix.
 #' - `simu_sam_data_case`: Case weight matrix.
 #' 
@@ -29,6 +29,8 @@ simu_sam_data_rook <- function(b0, rho0, sig0, n) {
     p <- length(b0)
     X <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
 
+    ## @param rNum: Number of units along row index.
+    ## @param cNum: Number of units along column index.
     set_rook_matrix <- function(rNum, cNum=rNum){
         idxR <- as.vector( row(matrix(NA, rNum, cNum)) )
         idxC <- as.vector( col(matrix(NA, rNum, cNum)) )
@@ -40,7 +42,7 @@ simu_sam_data_rook <- function(b0, rho0, sig0, n) {
                 outer(idxR, idxR, \(i, j) abs(i - j) == 1) )
         ) + 0.0
     }
-    W0 <- set_rook_matrix(n)
+    W0 <- set_rook_matrix(sqrt(n))
     W0 <- W0 / rowSums(W0)
 
     y <- solve(diag(n) - rho0*W0, as.matrix(X) %*% b0 + rnorm(n, sd=sig0))
@@ -52,7 +54,7 @@ simu_sam_data_rook <- function(b0, rho0, sig0, n) {
 
 #' @rdname simu-data
 #' @order 2
-#' @export 
+#' @export
 simu_sam_data_case <- function(b0, rho0, sig0, m, R=8) {
 
     n <- m * R

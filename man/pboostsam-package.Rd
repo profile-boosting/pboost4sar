@@ -2,6 +2,7 @@
 % Please edit documentation in R/pboostsam-package.R
 \docType{package}
 \name{pboostsam-package}
+\alias{pboostsam}
 \alias{pboostsam-package}
 \title{pboostsam: Profile Boosting Feature Selection for Spatial Autoregressive Model}
 \description{

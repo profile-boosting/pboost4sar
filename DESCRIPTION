@@ -1,6 +1,6 @@
 Package: pboostsam
 Title: Profile Boosting Feature Selection for Spatial Autoregressive Model
-Version: 0.2.2
+Version: 0.3.0
 Authors@R: 
     person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).

@@ -1,3 +1,15 @@
+# pboostsam 0.3.0 (2025-12-08)
+
+* rename `pboostsam.R` as `plagsarlm.R`.
+
+* add `plagsarlm2()` in `plagsarlm.R`.
+
+* add `sam-adaptivelasso.R`.
+
+* add `get-rho.R`.
+
+
+
 # pboostsam 0.2.2 (2025-11-25)
 
 * polish the generaction of rook weight matrix in `simu_sam_data_rook()` in `simu-data-data.R`.
