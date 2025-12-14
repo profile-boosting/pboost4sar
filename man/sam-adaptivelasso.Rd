@@ -12,6 +12,7 @@ tune_sam_adaptivelasso(
   X,
   Y,
   W,
+  rho,
   lambda.vec = 10^seq(-1, 1, length = 100),
   max.iter = 1000,
   tol = 1e-06

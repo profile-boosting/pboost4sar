@@ -1,7 +1,7 @@
 #' @name plagsarlm
 #' 
-#' @title Profile Boosting Feature Selection for Spatial Autoregressive Model
-#' @description Profile Boosting Feature Selection for Spatial Autoregressive Model
+#' @title Profile Boosting Variable Selection for Spatial Autoregressive Model
+#' @description Profile boosting variable selection for spatial autoregressive model.
 #' 
 #' @param x Matrix of covariates.
 #' @param y Vector of response.

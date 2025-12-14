@@ -97,12 +97,12 @@ sam_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6)
 #' @order 2
 #' @export
 tune_sam_adaptivelasso <- function(
-    X, Y, W,
+    X, Y, W, rho,
     lambda.vec = 10^seq(-1, 1, length = 100),
     max.iter = 1000,
     tol = 1e-6) {
 
-    rho.hat <- get_rho(X, Y, W)
+    rho.hat <- ifelse(missing(rho), get_rho(X, Y, W), rho)
 
     idx <- sapply(lambda.vec, function(lambda)
         sam_adaptivelasso(X, Y, W, rho.hat, lambda, max.iter, tol)$BIC
@@ -115,4 +115,3 @@ tune_sam_adaptivelasso <- function(
     class(egg) <- "tune.sam.adaptivelasso"
     return(egg)
 }
-

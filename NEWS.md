@@ -1,3 +1,11 @@
+# pboostsam 0.3.1 (2025-12-14)
+
+* add argument `rho` to `tune_sam_adaptivelasso()`.
+
+* polish documentation.
+
+
+
 # pboostsam 0.3.0 (2025-12-08)
 
 * rename `pboostsam.R` as `plagsarlm.R`.

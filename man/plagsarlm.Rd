@@ -3,7 +3,7 @@
 \name{plagsarlm}
 \alias{plagsarlm}
 \alias{plagsarlm2}
-\title{Profile Boosting Feature Selection for Spatial Autoregressive Model}
+\title{Profile Boosting Variable Selection for Spatial Autoregressive Model}
 \usage{
 plagsarlm(
   formula,
@@ -78,7 +78,7 @@ The pre-specified features in \code{keep} are counted toward \code{maxK}.}
 Model object fitted on the selected features.
 }
 \description{
-Profile Boosting Feature Selection for Spatial Autoregressive Model
+Profile boosting variable selection for spatial autoregressive model.
 }
 \examples{
 library(spdep)

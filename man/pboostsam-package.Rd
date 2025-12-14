@@ -4,9 +4,9 @@
 \name{pboostsam-package}
 \alias{pboostsam}
 \alias{pboostsam-package}
-\title{pboostsam: Profile Boosting Feature Selection for Spatial Autoregressive Model}
+\title{pboostsam: Profile Boosting Variable Selection for Spatial Autoregressive Model}
 \description{
-What the package does (one paragraph).
+Profile boosting variable selection for spatial autoregressive model.
 }
 \author{
 \strong{Maintainer}: Zengchao Xu \email{zengc.xu@aliyun.com}
