@@ -20,9 +20,10 @@
 #' 
 #' @export
 get_rho <- function(x, y, w) {
-    stopifnot( NROW(x) == length(y) )
-    stopifnot( all(rowSums(w) == 1) )
     stopifnot( is.matrix(x) )
+    stopifnot( NROW(x) == length(y) )
+    stopifnot( all( abs(rowSums(w) - 1.0) <= 1e-12 ) )
+    stopifnot( all(w >= 0.0) )
 
     if (NCOL(x) > NROW(x))
         warning("Singularity Possible!")

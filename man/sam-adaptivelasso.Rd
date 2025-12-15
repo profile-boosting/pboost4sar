@@ -13,6 +13,7 @@ tune_sam_adaptivelasso(
   Y,
   W,
   rho,
+  criterion = "BIC",
   lambda.vec = 10^seq(-1, 1, length = 100),
   max.iter = 1000,
   tol = 1e-06
@@ -32,6 +33,8 @@ tune_sam_adaptivelasso(
 \item{max.iter}{Maximal number of iterations.}
 
 \item{tol}{Covergence tolerance.}
+
+\item{criterion}{\emph{BIC} or \emph{EBIC}.}
 
 \item{lambda.vec}{Vector of \eqn{\lambda}.}
 }
@@ -58,5 +61,7 @@ W0 <- DF[["W0"]]
 
 system.time( rho.hat <- get_rho(X, Y, W0) )
 system.time( tune_sam_adaptivelasso(X, Y, W0) )
+system.time( tune_sam_adaptivelasso(X, Y, W0, rho.hat) )
+system.time( tune_sam_adaptivelasso(X, Y, W0, criterion="EBIC") )
 
 }

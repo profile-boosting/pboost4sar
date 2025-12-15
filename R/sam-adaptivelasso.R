@@ -7,6 +7,7 @@
 #' @param Y Response vector.
 #' @param W Weight matrix.
 #' @param rho Auto-correlation coefficient.
+#' @param criterion *BIC* or *EBIC*.
 #' @param lambda Tuning parameter.
 #' @param lambda.vec Vector of \eqn{\lambda}.
 #' @param max.iter Maximal number of iterations.
@@ -30,6 +31,8 @@
 #' 
 #' system.time( rho.hat <- get_rho(X, Y, W0) )
 #' system.time( tune_sam_adaptivelasso(X, Y, W0) )
+#' system.time( tune_sam_adaptivelasso(X, Y, W0, rho.hat) )
+#' system.time( tune_sam_adaptivelasso(X, Y, W0, criterion="EBIC") )
 #' 
 NULL
 #> NULL
@@ -45,6 +48,8 @@ sam_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6)
 
     n <- NROW(X)
     p <- NCOL(X)
+    ebic.r <- max(0.0, 1.0 - log(n) / (2.0*log(p)))
+    stopifnot( length(Y) == n )
 
     A.rho <- diag(n) - rho * W
     y <- A.rho %*% Y
@@ -78,13 +83,16 @@ sam_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6)
 
     sig2.hat <- mean( (A.rho %*% Y - X[, flag, drop=FALSE] %*% beta.hat[flag])^2 )
     BIC <- n * log(sig2.hat) - 2*log(det(A.rho)) + log(n) * sum(flag)
+    ebic.r <- max(0.0, log(p) / (2.0*log(n)))
+    EBIC <- BIC + 2.0 * ebic.r * lchoose(p, sum(flag))
 
     egg <- list(
         beta = beta.hat,
         sig2 = sig2.hat,
         rho = rho,
         flag = flag,
-        BIC = BIC
+        BIC = BIC,
+        EBIC = EBIC
     )
 
     class(egg) <- "sam.adaptivelasso"
@@ -97,7 +105,7 @@ sam_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6)
 #' @order 2
 #' @export
 tune_sam_adaptivelasso <- function(
-    X, Y, W, rho,
+    X, Y, W, rho, criterion="BIC",
     lambda.vec = 10^seq(-1, 1, length = 100),
     max.iter = 1000,
     tol = 1e-6) {
@@ -105,7 +113,7 @@ tune_sam_adaptivelasso <- function(
     rho.hat <- ifelse(missing(rho), get_rho(X, Y, W), rho)
 
     idx <- sapply(lambda.vec, function(lambda)
-        sam_adaptivelasso(X, Y, W, rho.hat, lambda, max.iter, tol)$BIC
+        get(criterion, sam_adaptivelasso(X, Y, W, rho.hat, lambda, max.iter, tol))
     ) |> which.min()
     
     lambda.opt <- lambda.vec[idx]

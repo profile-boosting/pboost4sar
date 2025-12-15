@@ -164,7 +164,8 @@ EBIC.Sarlm <- function(object, p, p.keep, ...) {
 #' @export
 plagsarlm2 <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     stopifnot( is.matrix(x) )
-    stopifnot( all(rowSums(w) == 1) )
+    stopifnot( all( abs(rowSums(w) - 1.0) <= 1e-12 ) )
+    stopifnot( all(w >= 0.0) )
     stopifnot( !anyNA(x) )
     stopifnot( !anyNA(y) )
     stopifnot( !anyNA(w) )

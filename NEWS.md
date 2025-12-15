@@ -1,3 +1,12 @@
+# pboostsam 0.3.2 (2025-12-15)
+
+* `R/sam-adaptivelasso.R`: add argument `criterion = "BIC" / "EBIC"` in `tune_sam_adaptivelasso()`.
+
+* improve stability of some `stopifnot`.
+
+
+
+
 # pboostsam 0.3.1 (2025-12-14)
 
 * add argument `rho` to `tune_sam_adaptivelasso()`.
