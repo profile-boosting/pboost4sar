@@ -1,9 +1,9 @@
-Package: pboostsam
-Title: Profile Boosting Variable Selection for Spatial Autoregressive Model
+Package: pvs4sar
+Title: The Profiled Variable Selection for Spatial Auto-Regressive Model
 Version: 0.3.2
 Authors@R: 
     person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre"))
-Description: Profile boosting variable selection for spatial autoregressive model.
+Description: Profiled variable selection for spatial auto-regressive model.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

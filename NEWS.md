@@ -1,3 +1,8 @@
+# pvs4sar 0.4.0 (2025-12-16)
+
+* rename the package name as "pvs4sar" (from "pboostsam").
+
+
 # pboostsam 0.3.2 (2025-12-15)
 
 * `R/sam-adaptivelasso.R`: add argument `criterion = "BIC" / "EBIC"` in `tune_sam_adaptivelasso()`.

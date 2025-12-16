@@ -1,14 +1,14 @@
 
-# pboostsam
+# pvs4sar
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of pboostsam is to ...
+The goal of pvs4sar is to ...
 
 ## Installation
 
-You can install the development version of pboostsam like so:
+You can install the development version of pvs4sar like so:
 
 ``` r
 # FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
@@ -19,7 +19,7 @@ You can install the development version of pboostsam like so:
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(pboostsam)
+library(pvs4sar)
 ## basic example code
 ```
 
