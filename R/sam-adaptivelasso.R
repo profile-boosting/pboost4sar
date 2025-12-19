@@ -1,7 +1,7 @@
 #' @name sam-adaptivelasso
 #' 
-#' @title Adaptive Lasso for Spatial Autoregressive Model
-#' @description Adaptive lasso for spatial autoregressive model.
+#' @title Adaptive Lasso for Spatial Auto-regressive Model
+#' @description Adaptive lasso for spatial auto-regressive model.
 #' 
 #' @param X Covariate matrix.
 #' @param Y Response vector.
@@ -14,8 +14,8 @@
 #' @param tol Covergence tolerance.
 #' 
 #' @return
-#' * `sam_adaptivelasso`: `list(beta, sig2, rho, flag, BIC)`.
-#' * `tune_sam_adaptivelasso`: `list(beta, sig2, rho, flag, BIC, lambda.opt)`.
+#' * `sar_adaptivelasso`: `list(beta, sig2, rho, flag, BIC)`.
+#' * `tune_sar_adaptivelasso`: `list(beta, sig2, rho, flag, BIC, lambda.opt)`.
 #' 
 #' @examples
 #' set.seed(2025)
@@ -24,15 +24,15 @@
 #' sig0 <- 1.0
 #' n <- 81
 #' 
-#' DF <- simu_sam_data_rook(b0, rho0, sig0, n)
+#' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
 #' Y <- DF[["y"]]
 #' X <- as.matrix(DF[["X"]])
 #' W0 <- DF[["W0"]]
 #' 
 #' system.time( rho.hat <- get_rho(X, Y, W0) )
-#' system.time( tune_sam_adaptivelasso(X, Y, W0) )
-#' system.time( tune_sam_adaptivelasso(X, Y, W0, rho.hat) )
-#' system.time( tune_sam_adaptivelasso(X, Y, W0, criterion="EBIC") )
+#' system.time( tune_sar_adaptivelasso(X, Y, W0) )
+#' system.time( tune_sar_adaptivelasso(X, Y, W0, rho.hat) )
+#' system.time( tune_sar_adaptivelasso(X, Y, W0, criterion="EBIC") )
 #' 
 NULL
 #> NULL
@@ -41,7 +41,7 @@ NULL
 #' @rdname sam-adaptivelasso
 #' @order 1
 #' @export
-sam_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6) {
+sar_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6) {
     stopifnot( NROW(X) == length(Y) )
     stopifnot( length(lambda) == 1 & is.numeric(lambda) )
     stopifnot( length(rho) == 1 & is.numeric(rho) )
@@ -104,7 +104,7 @@ sam_adaptivelasso <- function(X, Y, W, rho, lambda, max.iter = 1000, tol = 1e-6)
 #' @rdname sam-adaptivelasso
 #' @order 2
 #' @export
-tune_sam_adaptivelasso <- function(
+tune_sar_adaptivelasso <- function(
     X, Y, W, rho, criterion="BIC",
     lambda.vec = 10^seq(-1, 1, length = 100),
     max.iter = 1000,
@@ -113,11 +113,11 @@ tune_sam_adaptivelasso <- function(
     rho.hat <- ifelse(missing(rho), get_rho(X, Y, W), rho)
 
     idx <- sapply(lambda.vec, function(lambda)
-        get(criterion, sam_adaptivelasso(X, Y, W, rho.hat, lambda, max.iter, tol))
+        get(criterion, sar_adaptivelasso(X, Y, W, rho.hat, lambda, max.iter, tol))
     ) |> which.min()
     
     lambda.opt <- lambda.vec[idx]
-    egg <- sam_adaptivelasso(X, Y, W, rho.hat, lambda.opt, max.iter, tol)
+    egg <- sar_adaptivelasso(X, Y, W, rho.hat, lambda.opt, max.iter, tol)
     egg["lambda.opt"] <- lambda.opt
 
     class(egg) <- "tune.sam.adaptivelasso"

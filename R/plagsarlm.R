@@ -1,11 +1,15 @@
 #' @name plagsarlm
 #' 
-#' @title Profile Boosting Variable Selection for Spatial Autoregressive Model
-#' @description Profile boosting variable selection for spatial autoregressive model.
+#' @title Profiled Variable Selection for Spatial Auto-regressive Model
+#' 
+#' @description Profile boosting variable selection for spatial auto-regressive (SAR) model
+#' \deqn{\bm{y} = \rho W \bm{y} + X \beta + \bm{\varepsilon},}
+#' where \eqn{\bm{y}, \bm{\varepsilon} \in \mathbb{R}^n}, \eqn{X \in \mathbb{R}^{n \times p}},
+#' \eqn{\rho \in (-1, 1)}.
 #' 
 #' @param x Matrix of covariates.
 #' @param y Vector of response.
-#' @param w Weight matrix.
+#' @param w Weight matrix (row-sum scaled being one).
 #' @param formula Parameters passed to [spatialreg::lagsarlm].
 #' @param data Parameters passed to [spatialreg::lagsarlm].
 #' @param listw Parameters passed to [spatialreg::lagsarlm].
@@ -26,9 +30,11 @@
 #' If `maxK` is specified, it will supress `stopFun`, saying that the
 #' profile boosting continues until the procedure identifies `maxK` features.
 #' The pre-specified features in `keep` are counted toward `maxK`.
+#' Also see [pboost::pboost].
 #' @param keep Initial set of features that are included in model fitting.
 #' **If `keep` is specified, it should also be fully included in the RHS of `formula`.**
-#' @param verbose Print the procedure path?
+#' Also see [pboost::pboost].
+#' @param verbose Print the procedure path? Also see [pboost::pboost].
 #' 
 #' @return Model object fitted on the selected features.
 #' 
@@ -42,14 +48,13 @@
 #' sig0 <- 1.0
 #' n <- 81
 #' 
-#' DF <- simu_sam_data_rook(b0, rho0, sig0, n)
+#' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
 #' 
 #' data <- with(DF, data.frame(y, X))
 #' W0 <- mat2listw(DF[["W0"]], style="W")
 #' system.time( egg1 <- plagsarlm(y ~ ., data, W0, verbose=TRUE) )
 #' 
 #' system.time( egg2 <- plagsarlm2(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
-#' 
 #' 
 NULL
 #> NULL
@@ -64,67 +69,38 @@ plagsarlm <- function(
     method = "eigen", quiet = NULL, zero.policy = NULL, interval = NULL,
     tol.solve = .Machine$double.eps, trs = NULL, control = list(),
     stopFun = EBIC, keep = NULL, maxK = NULL, verbose = FALSE) {
+    stopifnot( !missing(formula) )
+    stopifnot( !missing(data) )
 
-    # # --- solution A ---
-    # lagsarlm_args <- names(formals(spatialreg::lagsarlm))
-    # user_args <- as.list(environment())
-    # args_for_lagsarlm <- user_args[intersect(names(user_args), lagsarlm_args)]
+    cl <- match.call()
 
+    sar_template <- cl
+    sar_template$stopFun <- NULL
+    sar_template$keep <- NULL
+    sar_template$maxK <- NULL
+    sar_template$verbose <- NULL
+    sar_template[[1L]] <- quote(lagsarlm)
 
-    # # --- solution B ---
-    # cl <- match.call()
-    # cl[[1L]] <- quote(lagsarlm)
+    required_paras <- c("data", "listw", "Durbin", "type")
+    for (ipara in required_paras)
+        if (!is.null(cl[[ipara]]))
+            sar_template[[ipara]] <- eval(cl[[ipara]], envir = parent.frame())
 
-    # call_env <- as.environment(as.list(environment()))
-
-    # lagsarlmArgs <- names(formals(spatialreg::lagsarlm))
-    # callArgs <- as.list(sam_template)[intersect(names(as.list(sam_template)), lagsarlmArgs)]
-
-    # fitFun <- function(formula, data) {
-    #     cl$formula <- formula
-    #     cl$data <- data
-    #     eval(cl, envir = call_env)
-    # }
-
-    # --- END ---
-
-    cl <- match.call(expand.dots = TRUE)
-    sam_template <- cl
-    sam_template$stopFun <- NULL
-    sam_template$keep <- NULL
-    sam_template$maxK <- NULL
-    sam_template$verbose <- NULL
-    sam_template[[1L]] <- quote(lagsarlm)
-    fitFun <- function(formula, data){
-        call <- sam_template
+    fitFun <- function(formula, data) {
+        call <- sar_template
         call$formula <- formula
+        call$data <- data
         return( eval(call, parent.frame()) )
     }
 
-    # scoreFun <- function(object) {
-    #     stopifnot( inherits(object, "Sarlm") )
-
-    #     n0 <- attr(logLik(object), "nobs")
-    #     rho <- get(object, "rho")
-
-    #     eta <- rep(coef(object)["(Intercept)"], n0)
-    #     vnames <- names(coef(object))[-(1:2)]
-    #     if (length(vnames) > 0)
-    #         eta <- eta + as.matrix(data[, vnames, drop=FALSE]) %*% coef(object)[vnames]
-
-    #     ## explicitly call `y` from `data`
-    #     drop( (diag(n0) - rho * W0) %*% data$y ) - eta
-    # }
-
     pboost(formula, data, fitFun, residuals, stopFun,
-           keep=keep, maxK=maxK, verbose=verbose)
+           keep = keep, maxK = maxK, verbose = verbose)
 }
 
 
 
-
 #' @title Extended BIC for SAM
-#' @description EBIC for spatial autoregressive model.
+#' @description EBIC for spatial auto-regressive model.
 #' 
 #' @param object See [pboost::EBIC].
 #' @param p See [pboost::EBIC].

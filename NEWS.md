@@ -2,6 +2,11 @@
 
 * rename the package name as "pvs4sar" (from "pboostsam").
 
+* eval argument `data` at first in `plagsarlm()`.
+
+* rename `simu_sam_data_*()` as `simu_sar_data_*()` and the releated filenames and examples.
+
+
 
 # pboostsam 0.3.2 (2025-12-15)
 

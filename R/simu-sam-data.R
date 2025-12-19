@@ -2,8 +2,8 @@
 #' @title Simulate Data
 #' 
 #' @description
-#' - `simu_sam_data_rook`: Rook weight matrix.
-#' - `simu_sam_data_case`: Case weight matrix.
+#' - `simu_sar_data_rook`: Rook weight matrix.
+#' - `simu_sar_data_case`: Case weight matrix.
 #' 
 #' @param b0 True vector of \eqn{\beta_0}.
 #' * `c(1.5, 3.0, 2.0, rep(0.0, 3))`
@@ -24,7 +24,7 @@ NULL
 #' @rdname simu-data
 #' @order 1
 #' @export
-simu_sam_data_rook <- function(b0, rho0, sig0, n) {
+simu_sar_data_rook <- function(b0, rho0, sig0, n) {
 
     p <- length(b0)
     X <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
@@ -55,7 +55,7 @@ simu_sam_data_rook <- function(b0, rho0, sig0, n) {
 #' @rdname simu-data
 #' @order 2
 #' @export
-simu_sam_data_case <- function(b0, rho0, sig0, m, R=8) {
+simu_sar_data_case <- function(b0, rho0, sig0, m, R=8) {
 
     n <- m * R
     p <- length(b0)

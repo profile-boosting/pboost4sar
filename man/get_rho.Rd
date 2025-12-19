@@ -26,7 +26,7 @@ rho0 <- 0.2
 sig0 <- 1.0
 n <- 81
 
-DF <- simu_sam_data_rook(b0, rho0, sig0, n)
+DF <- simu_sar_data_rook(b0, rho0, sig0, n)
 system.time( get_rho(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]]) )
 
 }

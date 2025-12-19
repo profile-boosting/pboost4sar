@@ -3,7 +3,7 @@
 \name{plagsarlm}
 \alias{plagsarlm}
 \alias{plagsarlm2}
-\title{Profile Boosting Variable Selection for Spatial Autoregressive Model}
+\title{Profiled Variable Selection for Spatial Auto-regressive Model}
 \usage{
 plagsarlm(
   formula,
@@ -59,26 +59,31 @@ stopFun(object) to evaluate the performance of model object returned
 by fitFun, such as \link[pboost:EBIC]{pboost::EBIC} or \link{BIC}.}
 
 \item{keep}{Initial set of features that are included in model fitting.
-\strong{If \code{keep} is specified, it should also be fully included in the RHS of \code{formula}.}}
+\strong{If \code{keep} is specified, it should also be fully included in the RHS of \code{formula}.}
+Also see \link[pboost:pboost]{pboost::pboost}.}
 
 \item{maxK}{Maximal number of identified features.
 If \code{maxK} is specified, it will supress \code{stopFun}, saying that the
 profile boosting continues until the procedure identifies \code{maxK} features.
-The pre-specified features in \code{keep} are counted toward \code{maxK}.}
+The pre-specified features in \code{keep} are counted toward \code{maxK}.
+Also see \link[pboost:pboost]{pboost::pboost}.}
 
-\item{verbose}{Print the procedure path?}
+\item{verbose}{Print the procedure path? Also see \link[pboost:pboost]{pboost::pboost}.}
 
 \item{x}{Matrix of covariates.}
 
 \item{y}{Vector of response.}
 
-\item{w}{Weight matrix.}
+\item{w}{Weight matrix (row-sum scaled being one).}
 }
 \value{
 Model object fitted on the selected features.
 }
 \description{
-Profile boosting variable selection for spatial autoregressive model.
+Profile boosting variable selection for spatial auto-regressive (SAR) model
+\deqn{\bm{y} = \rho W \bm{y} + X \beta + \bm{\varepsilon},}
+where \eqn{\bm{y}, \bm{\varepsilon} \in \mathbb{R}^n}, \eqn{X \in \mathbb{R}^{n \times p}},
+\eqn{\rho \in (-1, 1)}.
 }
 \examples{
 library(spdep)
@@ -90,13 +95,12 @@ rho0 <- 0.2
 sig0 <- 1.0
 n <- 81
 
-DF <- simu_sam_data_rook(b0, rho0, sig0, n)
+DF <- simu_sar_data_rook(b0, rho0, sig0, n)
 
 data <- with(DF, data.frame(y, X))
 W0 <- mat2listw(DF[["W0"]], style="W")
 system.time( egg1 <- plagsarlm(y ~ ., data, W0, verbose=TRUE) )
 
 system.time( egg2 <- plagsarlm2(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
-
 
 }
