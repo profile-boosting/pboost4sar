@@ -1,4 +1,4 @@
-#' @name plagsarlm
+#' @name pvs4sar
 #' 
 #' @title Profiled Variable Selection for Spatial Auto-regressive Model
 #' 
@@ -49,96 +49,20 @@
 #' n <- 81
 #' 
 #' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
-#' 
 #' data <- with(DF, data.frame(y, X))
-#' W0 <- mat2listw(DF[["W0"]], style="W")
-#' system.time( egg1 <- plagsarlm(y ~ ., data, W0, verbose=TRUE) )
 #' 
-#' system.time( egg2 <- plagsarlm2(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
+#' system.time( egg1 <- pvs4sar(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
+#' system.time( egg2 <- pvs4sar2(y ~ ., data, mat2listw(DF[["W0"]], style="W"), verbose=TRUE) )
 #' 
 NULL
 #> NULL
 
 
 
-#' @rdname plagsarlm
+#' @rdname pvs4sar
 #' @order 1
 #' @export
-plagsarlm <- function(
-    formula, data = list(), listw, na.action, Durbin, type,
-    method = "eigen", quiet = NULL, zero.policy = NULL, interval = NULL,
-    tol.solve = .Machine$double.eps, trs = NULL, control = list(),
-    stopFun = EBIC, keep = NULL, maxK = NULL, verbose = FALSE) {
-    stopifnot( !missing(formula) )
-    stopifnot( !missing(data) )
-
-    cl <- match.call()
-
-    sar_template <- cl
-    sar_template$stopFun <- NULL
-    sar_template$keep <- NULL
-    sar_template$maxK <- NULL
-    sar_template$verbose <- NULL
-    sar_template[[1L]] <- quote(lagsarlm)
-
-    required_paras <- c("data", "listw", "Durbin", "type")
-    for (ipara in required_paras)
-        if (!is.null(cl[[ipara]]))
-            sar_template[[ipara]] <- eval(cl[[ipara]], envir = parent.frame())
-
-    fitFun <- function(formula, data) {
-        call <- sar_template
-        call$formula <- formula
-        call$data <- data
-        return( eval(call, parent.frame()) )
-    }
-
-    pboost(formula, data, fitFun, residuals, stopFun,
-           keep = keep, maxK = maxK, verbose = verbose)
-}
-
-
-
-#' @title Extended BIC for SAM
-#' @description EBIC for spatial auto-regressive model.
-#' 
-#' @param object See [pboost::EBIC].
-#' @param p See [pboost::EBIC].
-#' @param p.keep See [pboost::EBIC].
-#' @param ... See [pboost::EBIC].
-#' 
-#' @return EBIC value.
-#' 
-#' @export
-EBIC.Sarlm <- function(object, p, p.keep, ...) {
-    stopifnot( inherits(object, "Sarlm") )
-
-    if (missing(p))
-        p <- get("p", envir=parent.frame())
-    if (missing(p.keep))
-        p.keep <- get("p.keep", envir=parent.frame())
-
-    dof <- attr(logLik(object), "df")
-    n0 <- attr(logLik(object), "nobs")
-    ebic.r <- max( 0.0, 1.0 - log(n0) / (2.0*log(p)) )
-    ebic.penalty <- ifelse(
-        ebic.r <= 0.0,
-        0.0,
-        2.0 * ebic.r * lchoose(p - p.keep, dof - p.keep)
-    )
-
-    stopifnot( is.finite(ebic.penalty) )
-    BIC(object) + ebic.penalty
-}
-
-
-
-
-
-#' @rdname plagsarlm
-#' @order 2
-#' @export
-plagsarlm2 <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
+pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     stopifnot( is.matrix(x) )
     stopifnot( all( abs(rowSums(w) - 1.0) <= 1e-12 ) )
     stopifnot( all(w >= 0.0) )
@@ -211,4 +135,77 @@ plagsarlm2 <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     }
 
     return(obj)
+}
+
+
+
+
+#' @rdname pvs4sar
+#' @order 2
+#' @export
+pvs4sar <- function(
+    formula, data = list(), listw, na.action, Durbin, type,
+    method = "eigen", quiet = NULL, zero.policy = NULL, interval = NULL,
+    tol.solve = .Machine$double.eps, trs = NULL, control = list(),
+    stopFun = EBIC, keep = NULL, maxK = NULL, verbose = FALSE) {
+    stopifnot( !missing(formula) )
+    stopifnot( !missing(data) )
+
+    cl <- match.call()
+
+    sar_template <- cl
+    sar_template$stopFun <- NULL
+    sar_template$keep <- NULL
+    sar_template$maxK <- NULL
+    sar_template$verbose <- NULL
+    sar_template[[1L]] <- quote(lagsarlm)
+
+    required_paras <- c("data", "listw", "Durbin", "type")
+    for (ipara in required_paras)
+        if (!is.null(cl[[ipara]]))
+            sar_template[[ipara]] <- eval(cl[[ipara]], envir = parent.frame())
+
+    fitFun <- function(formula, data) {
+        call <- sar_template
+        call$formula <- formula
+        call$data <- data
+        return( eval(call, parent.frame()) )
+    }
+
+    pboost(formula, data, fitFun, residuals, stopFun,
+           keep = keep, maxK = maxK, verbose = verbose)
+}
+
+
+
+#' @title Extended BIC for SAM
+#' @description EBIC for spatial auto-regressive model.
+#' 
+#' @param object See [pboost::EBIC].
+#' @param p See [pboost::EBIC].
+#' @param p.keep See [pboost::EBIC].
+#' @param ... See [pboost::EBIC].
+#' 
+#' @return EBIC value.
+#' 
+#' @export
+EBIC.Sarlm <- function(object, p, p.keep, ...) {
+    stopifnot( inherits(object, "Sarlm") )
+
+    if (missing(p))
+        p <- get("p", envir=parent.frame())
+    if (missing(p.keep))
+        p.keep <- get("p.keep", envir=parent.frame())
+
+    dof <- attr(logLik(object), "df")
+    n0 <- attr(logLik(object), "nobs")
+    ebic.r <- max( 0.0, 1.0 - log(n0) / (2.0*log(p)) )
+    ebic.penalty <- ifelse(
+        ebic.r <= 0.0,
+        0.0,
+        2.0 * ebic.r * lchoose(p - p.keep, dof - p.keep)
+    )
+
+    stopifnot( is.finite(ebic.penalty) )
+    BIC(object) + ebic.penalty
 }
