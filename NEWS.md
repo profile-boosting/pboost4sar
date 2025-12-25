@@ -1,3 +1,12 @@
+# pvs4sar 0.5.0 (2025-12-23)
+
+* mv `R/plagsarlm.R` to `R/pvs4sar.R`.
+
+* mv `R/sam-adaptivelasso.R` to `R/penalized-sar-adaptivelasso.R`.
+
+* add `R/penalized-sar.R`, `R/penalized-sar-lasso.R`, `R/penalized-sar-scad.R`.
+
+
 # pvs4sar 0.4.0 (2025-12-16)
 
 * rename the package name as "pvs4sar" (from "pboostsam").

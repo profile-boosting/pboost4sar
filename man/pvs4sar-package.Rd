@@ -2,7 +2,6 @@
 % Please edit documentation in R/pvs4sar-package.R
 \docType{package}
 \name{pvs4sar-package}
-\alias{pvs4sar}
 \alias{pvs4sar-package}
 \title{pvs4sar: The Profiled Variable Selection for Spatial Auto-Regressive Model}
 \description{

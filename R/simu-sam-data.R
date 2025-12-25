@@ -15,7 +15,7 @@
 #' @param m In Case spatial weight matrix, \eqn{W = I_R \otimes B_m}.
 #' @param R In Case spatial weight matrix, \eqn{W = I_R \otimes B_m}.
 #' 
-#' @return `list(y, X, W0, s0)`.
+#' @return `list(y, x, W0, s0)`.
 #' 
 NULL
 #> NULL
@@ -27,27 +27,25 @@ NULL
 simu_sar_data_rook <- function(b0, rho0, sig0, n) {
 
     p <- length(b0)
-    X <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
+    x <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
 
-    ## @param rNum: Number of units along row index.
-    ## @param cNum: Number of units along column index.
+    ## rNum: Number of row units
+    ## cNum: Number of column units
     set_rook_matrix <- function(rNum, cNum=rNum){
         idxR <- as.vector( row(matrix(NA, rNum, cNum)) )
         idxC <- as.vector( col(matrix(NA, rNum, cNum)) )
 
-        (
-            ( outer(idxR, idxR, \(i, j) i == j) &
-                outer(idxC, idxC, \(i, j) abs(i - j) == 1) ) |
-            ( outer(idxC, idxC, \(i, j) i == j) &
-                outer(idxR, idxR, \(i, j) abs(i - j) == 1) )
-        ) + 0.0
+        flag.row <- ( outer(idxR, idxR, \(i, j) i == j) & outer(idxC, idxC, \(i, j) abs(i - j) == 1) )
+        flag.col <- ( outer(idxC, idxC, \(i, j) i == j) & outer(idxR, idxR, \(i, j) abs(i - j) == 1) )
+
+        (flag.row | flag.col) * 1.0
     }
     W0 <- set_rook_matrix(sqrt(n))
     W0 <- W0 / rowSums(W0)
 
-    y <- solve(diag(n) - rho0*W0, as.matrix(X) %*% b0 + rnorm(n, sd=sig0))
+    y <- solve(diag(n) - rho0*W0, as.matrix(x) %*% b0 + rnorm(n, sd=sig0))
 
-    return( list(y=y, X=X, W0=W0, s0=names(X)[which(b0 != 0)]) )
+    return( list(y=y, x=x, W0=W0, s0=names(x)[which(b0 != 0)]) )
 }
 
 
@@ -59,13 +57,13 @@ simu_sar_data_case <- function(b0, rho0, sig0, m, R=8) {
 
     n <- m * R
     p <- length(b0)
-    X <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
+    x <- data.frame( matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-"))) )
 
     W0 <- kronecker(diag(R), (matrix(1.0, m, m) - diag(m)) / (m - 1.0))
     W0 <- W0 / rowSums(W0)
 
-    y <- solve(diag(n) - rho0*W0, as.matrix(X) %*% b0 + rnorm(n, sd=sig0))
+    y <- solve(diag(n) - rho0*W0, as.matrix(x) %*% b0 + rnorm(n, sd=sig0))
 
-    return( list(y=y, X=X, W0=W0, s0=names(X)[which(b0 != 0)]) )
+    return( list(y=y, x=x, W0=W0, s0=names(x)[which(b0 != 0)]) )
 
 }

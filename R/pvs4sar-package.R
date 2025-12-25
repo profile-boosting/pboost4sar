@@ -2,6 +2,8 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom glmnet glmnet
+#' @importFrom ncvreg ncvreg
 #' @importFrom pboost EBIC
 #' @importFrom pboost pboost
 #' @importFrom spatialreg lagsarlm
@@ -12,6 +14,7 @@
 #' @importFrom stats logLik
 #' @importFrom stats na.fail
 #' @importFrom stats optimize
+#' @importFrom stats predict
 #' @importFrom stats residuals
 #' @importFrom stats rnorm
 ## usethis namespace: end

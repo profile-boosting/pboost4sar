@@ -7,6 +7,8 @@
 #' where \eqn{\bm{y}, \bm{\varepsilon} \in \mathbb{R}^n}, \eqn{X \in \mathbb{R}^{n \times p}},
 #' \eqn{\rho \in (-1, 1)}.
 #' 
+#' `pvs4sar_lagsarlm()` equips the PVS procedure for [spatialreg::lagsarlm].
+#' 
 #' @param x Matrix of covariates.
 #' @param y Vector of response.
 #' @param w Weight matrix (row-sum scaled being one).
@@ -49,10 +51,10 @@
 #' n <- 81
 #' 
 #' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
-#' data <- with(DF, data.frame(y, X))
+#' data <- with(DF, data.frame(y, x))
 #' 
-#' system.time( egg1 <- pvs4sar(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
-#' system.time( egg2 <- pvs4sar2(y ~ ., data, mat2listw(DF[["W0"]], style="W"), verbose=TRUE) )
+#' system.time( egg1 <- pvs4sar(as.matrix(DF[["x"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
+#' system.time( egg2 <- pvs4sar_lagsarlm(y ~ ., data, mat2listw(DF[["W0"]], style="W"), verbose=TRUE) )
 #' 
 NULL
 #> NULL
@@ -60,7 +62,6 @@ NULL
 
 
 #' @rdname pvs4sar
-#' @order 1
 #' @export
 pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     stopifnot( is.matrix(x) )
@@ -134,6 +135,7 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
         obj.level <- obj.tmp.level
     }
 
+    class(obj) <- "pvs4sar"
     return(obj)
 }
 
@@ -141,9 +143,8 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
 
 
 #' @rdname pvs4sar
-#' @order 2
 #' @export
-pvs4sar <- function(
+pvs4sar_lagsarlm <- function(
     formula, data = list(), listw, na.action, Durbin, type,
     method = "eigen", quiet = NULL, zero.policy = NULL, interval = NULL,
     tol.solve = .Machine$double.eps, trs = NULL, control = list(),

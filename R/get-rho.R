@@ -16,7 +16,7 @@
 #' n <- 81
 #' 
 #' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
-#' system.time( get_rho(as.matrix(DF[["X"]]), DF[["y"]], DF[["W0"]]) )
+#' system.time( get_rho(as.matrix(DF[["x"]]), DF[["y"]], DF[["W0"]]) )
 #' 
 #' @export
 get_rho <- function(x, y, w) {

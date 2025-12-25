@@ -29,7 +29,7 @@ simu_sar_data_case(b0, rho0, sig0, m, R = 8)
 \item{R}{In Case spatial weight matrix, \eqn{W = I_R \otimes B_m}.}
 }
 \value{
-\code{list(y, X, W0, s0)}.
+\code{list(y, x, W0, s0)}.
 }
 \description{
 \itemize{
