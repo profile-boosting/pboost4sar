@@ -1,3 +1,10 @@
+# pvs4sar 0.5.1 (2025-12-25)
+
+* update `simu-sar-data.R` according to the manuscript.
+
+
+
+
 # pvs4sar 0.5.0 (2025-12-23)
 
 * mv `R/plagsarlm.R` to `R/pvs4sar.R`.

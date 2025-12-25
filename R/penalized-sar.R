@@ -27,23 +27,23 @@
 #' 
 #' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
 #' y <- DF[["y"]]
-#' x <- as.matrix(DF[["x"]])
-#' W0 <- DF[["W0"]]
+#' x <- DF[["x"]]
+#' w <- DF[["w"]]
 #' 
-#' system.time( rho.hat <- get_rho(x, y, W0) )
+#' system.time( rho.hat <- get_rho(x, y, w) )
 #' 
-#' system.time( tune_sar_adaptivelasso(x, y, W0) )
-#' system.time( tune_sar_adaptivelasso(x, y, W0, rho.hat) )
+#' system.time( tune_sar_adaptivelasso(x, y, w) )
+#' system.time( tune_sar_adaptivelasso(x, y, w, rho.hat) )
 #' 
-#' system.time( tune_sar_scad(x, y, W0) )
-#' system.time( tune_sar_scad(x, y, W0, rho.hat) )
-#' system.time( tune_sar_scad(x, y, W0, lambda.vec=10^seq(-1, 1, length=5)) )
-#' system.time( tune_sar_scad(x, y, W0, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
+#' system.time( tune_sar_scad(x, y, w) )
+#' system.time( tune_sar_scad(x, y, w, rho.hat) )
+#' system.time( tune_sar_scad(x, y, w, lambda.vec=10^seq(-1, 1, length=5)) )
+#' system.time( tune_sar_scad(x, y, w, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
 #' 
-#' system.time( tune_sar_lasso(x, y, W0) )
-#' system.time( tune_sar_lasso(x, y, W0, rho.hat) )
-#' system.time( tune_sar_lasso(x, y, W0, lambda.vec=10^seq(-1, 1, length=5)) )
-#' system.time( tune_sar_lasso(x, y, W0, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
+#' system.time( tune_sar_lasso(x, y, w) )
+#' system.time( tune_sar_lasso(x, y, w, rho.hat) )
+#' system.time( tune_sar_lasso(x, y, w, lambda.vec=10^seq(-1, 1, length=5)) )
+#' system.time( tune_sar_lasso(x, y, w, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
 #' 
 NULL
 #> NULL

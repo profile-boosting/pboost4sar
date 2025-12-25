@@ -100,7 +100,7 @@ n <- 81
 DF <- simu_sar_data_rook(b0, rho0, sig0, n)
 data <- with(DF, data.frame(y, x))
 
-system.time( egg1 <- pvs4sar(as.matrix(DF[["x"]]), DF[["y"]], DF[["W0"]], verbose=TRUE) )
-system.time( egg2 <- pvs4sar_lagsarlm(y ~ ., data, mat2listw(DF[["W0"]], style="W"), verbose=TRUE) )
+system.time( egg1 <- pvs4sar(DF[["x"]], DF[["y"]], DF[["w"]], verbose=TRUE) )
+system.time( egg2 <- pvs4sar_lagsarlm(y ~ ., data, mat2listw(DF[["w"]], style="W"), verbose=TRUE) )
 
 }
