@@ -50,11 +50,22 @@
 #' sig0 <- 1.0
 #' n <- 81
 #' 
-#' DF <- simu_sar_data_rook(b0, rho0, sig0, n)
-#' data <- with(DF, data.frame(y, x))
+#' DF <- simu_sar_data_rook(b0, rho0, sig0, n, sqrt(n), sqrt(n))
+#' x <- DF[["x"]]
+#' y <- DF[["y"]]
+#' w <- DF[["w"]]
 #' 
-#' system.time( egg1 <- pvs4sar(DF[["x"]], DF[["y"]], DF[["w"]], verbose=TRUE) )
-#' system.time( egg2 <- pvs4sar_lagsarlm(y ~ ., data, mat2listw(DF[["w"]], style="W"), verbose=TRUE) )
+#' system.time( egg <- pvs4sar(x, y, w, verbose=TRUE) )
+#' y.tilde <- (diag(NROW(x)) - egg[["rho"]] * w) %*% y
+#' 
+#' flag <- egg[["flag"]]
+#' beta.hat <- egg[["beta"]][sort(names(egg[["beta"]]))]
+#' sig2.hat <- mean( (y.tilde - drop(x[, flag, drop=FALSE] %*% beta.hat))^2 )
+#' print( egg[["sig2"]] - sig2.hat )
+#' 
+#' system.time(
+#'  pvs4sar_lagsarlm(y ~ ., data.frame(y, x), mat2listw(DF[["w"]], style="W"), verbose=TRUE)
+#' )
 #' 
 NULL
 #> NULL
@@ -76,6 +87,10 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     ebic.r <- max(0.0, 1.0 - log(n) / (2.0*log(p)))
     stopifnot( length(y) == n )
 
+    cnames <- colnames(x)
+    if (is.null(cnames))
+        cnames <- colnames(x) <- paste0("X", 1:p)
+
     fitsarlm <- function(x, y, w) {
         stopifnot( NROW(x) == length(y) )
         stopifnot( is.matrix(x) )
@@ -90,9 +105,9 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
         EBIC <- BIC + 2.0 * ebic.r * lchoose(p, NCOL(x))
 
         list(
-            beta.hat = beta.hat,
-            sig2.hat = sig2.hat,
-            rho.hat = rho.hat,
+            beta = beta.hat,
+            sig2 = sig2.hat,
+            rho = rho.hat,
             residuals = err,
             level = EBIC
         )
@@ -103,7 +118,7 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
             if (missing(i.max))
                 message(sprintf("Initial model with level=%.3f", level))
             else
-                message(sprintf("Adding feature `%i': model level=%.3f", i.max, level))
+                message(sprintf("Adding feature `%s': model level=%.3f", cnames[i.max], level))
 
     if (!is.null(maxK)) {
         stopifnot(maxK < NCOL(x))
@@ -134,6 +149,10 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
         idx <- idx.tmp
         obj.level <- obj.tmp.level
     }
+
+    flag <- rep(FALSE, p)
+    flag[idx] <- TRUE
+    obj[["flag"]] <- flag
 
     class(obj) <- "pvs4sar"
     return(obj)

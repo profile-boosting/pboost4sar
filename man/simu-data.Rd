@@ -6,7 +6,7 @@
 \alias{simu-data}
 \title{Simulate Data}
 \usage{
-simu_sar_data_rook(b0, rho0, sig0, n)
+simu_sar_data_rook(b0, rho0, sig0, n, rNum, cNum)
 
 simu_sar_data_case(b0, rho0, sig0, n)
 }
@@ -23,6 +23,10 @@ simu_sar_data_case(b0, rho0, sig0, n)
 \item{sig0}{\eqn{\sigma_0} for \eqn{\varepsilon}.}
 
 \item{n}{Sample size.}
+
+\item{rNum}{Number of row units for \code{simu_sar_data_rook}.}
+
+\item{cNum}{Number of column units for \code{simu_sar_data_rook}.}
 }
 \value{
 \code{list(y, x, w)}.

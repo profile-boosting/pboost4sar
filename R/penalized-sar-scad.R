@@ -11,7 +11,7 @@ tune_sar_scad <- function(x, y, w, rho, lambda.vec) {
     stopifnot( length(rho) == 1 & is.numeric(rho) )
 
     A.rho <- diag(n) - rho * w
-    y <- A.rho %*% y
+    y <- drop(A.rho %*% y)
     stopifnot( length(y) == n )
 
     if (missing(lambda.vec))
@@ -36,17 +36,27 @@ tune_sar_scad <- function(x, y, w, rho, lambda.vec) {
 
     opt.bic <- which.min(BIC)
     opt.ebic <- which.min(EBIC)
+
+    bic.flag <- abs(as.numeric(beta.hat[, opt.bic])) > 1e-6
+    ebic.flag <- abs(as.numeric(beta.hat[, opt.ebic])) > 1e-6
+    stopifnot( length(bic.flag) == p )
+    stopifnot( length(ebic.flag) == p )
+
     egg <- list(
         bic.beta = as.numeric(beta.hat[, opt.bic]),
+        bic.intercept = models[["beta"]]["(Intercept)", opt.bic],
         bic.sig2 = sig2.hat[opt.bic],
         bic.rho = rho,
+        bic.flag = bic.flag,
         bic.lambda = lambda[opt.bic],
         bic.BIC = BIC[opt.bic],
         bic.EBIC = EBIC[opt.bic],
         # --------------------
         ebic.beta = as.numeric(beta.hat[, opt.ebic]),
+        ebic.intercept = models[["beta"]]["(Intercept)", opt.ebic],
         ebic.sig2 = sig2.hat[opt.ebic],
         ebic.rho = rho,
+        ebic.flag = ebic.flag,
         ebic.lambda = lambda[opt.ebic],
         ebic.BIC = BIC[opt.ebic],
         ebic.EBIC = EBIC[opt.ebic]

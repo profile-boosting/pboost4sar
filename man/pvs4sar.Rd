@@ -97,10 +97,21 @@ rho0 <- 0.2
 sig0 <- 1.0
 n <- 81
 
-DF <- simu_sar_data_rook(b0, rho0, sig0, n)
-data <- with(DF, data.frame(y, x))
+DF <- simu_sar_data_rook(b0, rho0, sig0, n, sqrt(n), sqrt(n))
+x <- DF[["x"]]
+y <- DF[["y"]]
+w <- DF[["w"]]
 
-system.time( egg1 <- pvs4sar(DF[["x"]], DF[["y"]], DF[["w"]], verbose=TRUE) )
-system.time( egg2 <- pvs4sar_lagsarlm(y ~ ., data, mat2listw(DF[["w"]], style="W"), verbose=TRUE) )
+system.time( egg <- pvs4sar(x, y, w, verbose=TRUE) )
+y.tilde <- (diag(NROW(x)) - egg[["rho"]] * w) \%*\% y
+
+flag <- egg[["flag"]]
+beta.hat <- egg[["beta"]][sort(names(egg[["beta"]]))]
+sig2.hat <- mean( (y.tilde - drop(x[, flag, drop=FALSE] \%*\% beta.hat))^2 )
+print( egg[["sig2"]] - sig2.hat )
+
+system.time(
+ pvs4sar_lagsarlm(y ~ ., data.frame(y, x), mat2listw(DF[["w"]], style="W"), verbose=TRUE)
+)
 
 }

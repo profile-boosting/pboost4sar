@@ -12,6 +12,8 @@
 #' @param rho0 \eqn{\rho_0}.
 #' @param sig0 \eqn{\sigma_0} for \eqn{\varepsilon}.
 #' @param n Sample size.
+#' @param rNum Number of row units for `simu_sar_data_rook`.
+#' @param cNum Number of column units for `simu_sar_data_rook`.
 #' 
 #' @return `list(y, x, w)`.
 #' 
@@ -22,14 +24,13 @@ NULL
 #' @rdname simu-data
 #' @order 1
 #' @export
-simu_sar_data_rook <- function(b0, rho0, sig0, n) {
+simu_sar_data_rook <- function(b0, rho0, sig0, n, rNum, cNum) {
+    stopifnot( rNum*cNum == n )
 
     p <- length(b0)
     x <- matrix(rnorm(n*p), n) %*% chol(0.7^abs(outer(1:p, 1:p, "-")))
 
-    ## rNum: Number of row units
-    ## cNum: Number of column units
-    set_rook_matrix <- function(rNum, cNum=rNum){
+    set_rook_matrix <- function(rNum, cNum) {
         idxR <- as.vector( row(matrix(NA, rNum, cNum)) )
         idxC <- as.vector( col(matrix(NA, rNum, cNum)) )
 
@@ -38,7 +39,7 @@ simu_sar_data_rook <- function(b0, rho0, sig0, n) {
 
         (flag.row | flag.col) * 1.0
     }
-    W0 <- set_rook_matrix(sqrt(n))
+    W0 <- set_rook_matrix(rNum, cNum)
     W0 <- W0 / rowSums(W0)
     stopifnot( NROW(W0) == n )
     stopifnot( NCOL(W0) == n )

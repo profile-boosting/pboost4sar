@@ -11,7 +11,7 @@ sar_adaptivelasso <- function(x, y, w, rho, lambda, max.iter = 1000, tol = 1e-6)
     stopifnot( ebic.r >= 0.0 )
 
     A.rho <- diag(n) - rho * w
-    y <- A.rho %*% y
+    y <- drop(A.rho %*% y)
     stopifnot( length(y) == n )
     
     ## initial estimation & active flag
@@ -87,6 +87,7 @@ tune_sar_adaptivelasso <- function(x, y, w, rho, lambda.vec = 10^seq(-1, 1, leng
         bic.beta = as.numeric(model.bic[["beta"]]),
         bic.sig2 = model.bic[["sig2"]],
         bic.rho = model.bic[["rho"]],
+        bic.flag = model.bic[["flag"]],
         bic.lambda = model.bic[["lambda"]],
         bic.BIC = model.bic[["BIC"]],
         bic.EBIC = model.bic[["EBIC"]],
@@ -94,6 +95,7 @@ tune_sar_adaptivelasso <- function(x, y, w, rho, lambda.vec = 10^seq(-1, 1, leng
         ebic.beta = as.numeric(model.ebic[["beta"]]),
         ebic.sig2 = model.ebic[["sig2"]],
         ebic.rho = model.ebic[["rho"]],
+        ebic.flag = model.ebic[["flag"]],
         ebic.lambda = model.ebic[["lambda"]],
         ebic.BIC = model.ebic[["BIC"]],
         ebic.EBIC = model.ebic[["EBIC"]]
