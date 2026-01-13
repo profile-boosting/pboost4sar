@@ -1,3 +1,12 @@
+# pvs4sar 0.6.0 (2026-01-13)
+
+* improve the computational efficiency of adaptive lasso for SAR model, including:
+    - use Woodbury matrix identity for ridge estimation
+    - add arguments `beta.ini` and `rho.ini` for grid search
+    - remove the shared constant `log(det(A.rho))` in BIC
+
+
+
 # pvs4sar 0.5.2 (2025-12-25)
 
 * add `flag` into results of all methods.

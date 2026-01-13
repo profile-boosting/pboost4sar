@@ -10,7 +10,9 @@
 #' @param w Weight matrix (row-sum scaled being one).
 #' @param rho Auto-correlation coefficient.
 #' @param lambda Tuning parameter.
-#' @param lambda.vec Vector of \eqn{\lambda}.
+#' @param lambda.vec Sequence of \eqn{\lambda}.
+#' @param beta.ini Initial \eqn{\beta}.
+#' @param y.tilde \eqn{\tilde{y} = (I - \rho w) y}.
 #' @param max.iter Maximal number of iterations.
 #' @param tol Covergence tolerance.
 #' 
@@ -35,6 +37,7 @@
 #' ## ---------- adaptive lasso ----------
 #' system.time( tune_sar_adaptivelasso(x, y, w) )
 #' system.time( egg <- tune_sar_adaptivelasso(x, y, w, rho.hat) )
+#' system.time( tune_sar_adaptivelasso(x, y, w, rho=NULL) )
 #' 
 #' flag <- egg[["bic.flag"]]
 #' sig2.hat <- mean( (y.tilde - drop(x[, flag, drop=FALSE] %*% egg[["bic.beta"]][flag]))^2 )
@@ -47,6 +50,7 @@
 #' ## ---------- scad ----------
 #' system.time( tune_sar_scad(x, y, w) )
 #' system.time( tune_sar_scad(x, y, w, rho.hat) )
+#' system.time( tune_sar_scad(x, y, w, rho=NULL) )
 #' system.time( tune_sar_scad(x, y, w, lambda.vec=10^seq(-1, 1, length=5)) )
 #' system.time( egg <- tune_sar_scad(x, y, w, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
 #' 
@@ -63,6 +67,7 @@
 #' ## ---------- lasso ----------
 #' system.time( tune_sar_lasso(x, y, w) )
 #' system.time( tune_sar_lasso(x, y, w, rho.hat) )
+#' system.time( tune_sar_lasso(x, y, w, rho=NULL) )
 #' system.time( tune_sar_lasso(x, y, w, lambda.vec=10^seq(-1, 1, length=5)) )
 #' system.time( egg <- tune_sar_lasso(x, y, w, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
 #' 

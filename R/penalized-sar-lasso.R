@@ -7,7 +7,7 @@ tune_sar_lasso <- function(x, y, w, rho, lambda.vec) {
     ebic.r <- max(0.0, 1.0 - log(n) / (2.0*log(p)))
     stopifnot( ebic.r >= 0.0 )
 
-    rho <- ifelse(missing(rho), get_rho(x, y, w), rho)
+    rho <- ifelse(missing(rho) || is.null(rho), get_rho(x, y, w), rho)
     stopifnot( length(rho) == 1 & is.numeric(rho) )
 
     A.rho <- diag(n) - rho * w

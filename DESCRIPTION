@@ -1,6 +1,6 @@
 Package: pvs4sar
 Title: The Profiled Variable Selection for Spatial Auto-Regressive Model
-Version: 0.5.2
+Version: 0.6.0
 Authors@R: 
     person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre"))
 Description: Profiled variable selection for spatial auto-regressive model.

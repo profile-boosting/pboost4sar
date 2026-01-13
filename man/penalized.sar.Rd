@@ -9,7 +9,7 @@
 \alias{penalized.sar}
 \title{Penalized Methods for Spatial Auto-Regressive Model}
 \usage{
-sar_adaptivelasso(x, y, w, rho, lambda, max.iter = 1000, tol = 1e-06)
+sar_adaptivelasso(x, y.tilde, lambda, beta.ini, max.iter = 1000, tol = 1e-06)
 
 tune_sar_adaptivelasso(x, y, w, rho, lambda.vec = 10^seq(-1, 1, length = 100))
 
@@ -20,19 +20,23 @@ tune_sar_scad(x, y, w, rho, lambda.vec)
 \arguments{
 \item{x}{Matrix of covariates.}
 
+\item{y.tilde}{\eqn{\tilde{y} = (I - \rho w) y}.}
+
+\item{lambda}{Tuning parameter.}
+
+\item{beta.ini}{Initial \eqn{\beta}.}
+
+\item{max.iter}{Maximal number of iterations.}
+
+\item{tol}{Covergence tolerance.}
+
 \item{y}{Vector of response.}
 
 \item{w}{Weight matrix (row-sum scaled being one).}
 
 \item{rho}{Auto-correlation coefficient.}
 
-\item{lambda}{Tuning parameter.}
-
-\item{max.iter}{Maximal number of iterations.}
-
-\item{tol}{Covergence tolerance.}
-
-\item{lambda.vec}{Vector of \eqn{\lambda}.}
+\item{lambda.vec}{Sequence of \eqn{\lambda}.}
 }
 \value{
 \code{list(beta, sig2, rho, lambda, BIC, EBIC)} for \code{bic / ebic}.
@@ -59,6 +63,7 @@ y.tilde <- (diag(NROW(x)) - rho.hat* w) \%*\% y
 ## ---------- adaptive lasso ----------
 system.time( tune_sar_adaptivelasso(x, y, w) )
 system.time( egg <- tune_sar_adaptivelasso(x, y, w, rho.hat) )
+system.time( tune_sar_adaptivelasso(x, y, w, rho=NULL) )
 
 flag <- egg[["bic.flag"]]
 sig2.hat <- mean( (y.tilde - drop(x[, flag, drop=FALSE] \%*\% egg[["bic.beta"]][flag]))^2 )
@@ -71,6 +76,7 @@ print( egg[["ebic.sig2"]] - sig2.hat )
 ## ---------- scad ----------
 system.time( tune_sar_scad(x, y, w) )
 system.time( tune_sar_scad(x, y, w, rho.hat) )
+system.time( tune_sar_scad(x, y, w, rho=NULL) )
 system.time( tune_sar_scad(x, y, w, lambda.vec=10^seq(-1, 1, length=5)) )
 system.time( egg <- tune_sar_scad(x, y, w, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
 
@@ -87,6 +93,7 @@ print( egg[["ebic.sig2"]] - sig2.hat )
 ## ---------- lasso ----------
 system.time( tune_sar_lasso(x, y, w) )
 system.time( tune_sar_lasso(x, y, w, rho.hat) )
+system.time( tune_sar_lasso(x, y, w, rho=NULL) )
 system.time( tune_sar_lasso(x, y, w, lambda.vec=10^seq(-1, 1, length=5)) )
 system.time( egg <- tune_sar_lasso(x, y, w, rho.hat, lambda.vec=10^seq(-1, 1, length=5)) )
 
