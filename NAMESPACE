@@ -2,8 +2,8 @@
 
 S3method(EBIC,Sarlm)
 export(get_rho)
-export(pvs4sar)
-export(pvs4sar_lagsarlm)
+export(plagsarlm)
+export(psar)
 export(sar_adaptivelasso)
 export(simu_sar_data_case)
 export(simu_sar_data_rook)

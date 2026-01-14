@@ -1,3 +1,7 @@
+# pboost4sar 0.6.0 (2026-01-14)
+
+* rename the package as `pboost4sar`.
+
 # pvs4sar 0.6.0 (2026-01-13)
 
 * improve the computational efficiency of adaptive lasso for SAR model, including:
@@ -86,4 +90,4 @@
 
 # pboostsam 0.1.0 (2025-11-20)
 
-* Initial CRAN submission.
+* Initialization.

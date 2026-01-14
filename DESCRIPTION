@@ -1,17 +1,11 @@
-Package: pvs4sar
-Title: The Profiled Variable Selection for Spatial Auto-Regressive Model
+Package: pboost4sar
+Title: Profiled Variable Selection (profile boosting) for Spatial Auto-Regressive Model
 Version: 0.6.0
 Authors@R: 
     person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre"))
-Description: Profiled variable selection for spatial auto-regressive model.
+Description: Profiled variable selection (profile boosting) for spatial auto-regressive (SAR) model.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Imports: 
-    glmnet,
-    ncvreg,
-    pboost,
-    spatialreg,
-    spdep,
-    stats
+Imports: glmnet, ncvreg, pboost, spatialreg, spdep, stats

@@ -1,13 +1,14 @@
-#' @name pvs4sar
+#' @name psar
 #' 
-#' @title Profiled Variable Selection for Spatial Auto-regressive Model
+#' @title Profiled Variable Selection (profile boosting) for Spatial Auto-regressive Model
 #' 
 #' @description Profile boosting variable selection for spatial auto-regressive (SAR) model
 #' \deqn{\bm{y} = \rho W \bm{y} + X \beta + \bm{\varepsilon},}
 #' where \eqn{\bm{y}, \bm{\varepsilon} \in \mathbb{R}^n}, \eqn{X \in \mathbb{R}^{n \times p}},
 #' \eqn{\rho \in (-1, 1)}.
 #' 
-#' `pvs4sar_lagsarlm()` equips the PVS procedure for [spatialreg::lagsarlm].
+#' * `psar()` implements the PVS procedure for data matrix.
+#' * `plagsarlm()` equips the PVS procedure for [spatialreg::lagsarlm].
 #' 
 #' @param x Matrix of covariates.
 #' @param y Vector of response.
@@ -55,7 +56,7 @@
 #' y <- DF[["y"]]
 #' w <- DF[["w"]]
 #' 
-#' system.time( egg <- pvs4sar(x, y, w, verbose=TRUE) )
+#' system.time( egg <- psar(x, y, w, verbose=TRUE) )
 #' y.tilde <- (diag(NROW(x)) - egg[["rho"]] * w) %*% y
 #' 
 #' flag <- egg[["flag"]]
@@ -64,7 +65,7 @@
 #' print( egg[["sig2"]] - sig2.hat )
 #' 
 #' system.time(
-#'  pvs4sar_lagsarlm(y ~ ., data.frame(y, x), mat2listw(DF[["w"]], style="W"), verbose=TRUE)
+#'  plagsarlm(y ~ ., data.frame(y, x), mat2listw(DF[["w"]], style="W"), verbose=TRUE)
 #' )
 #' 
 NULL
@@ -72,9 +73,9 @@ NULL
 
 
 
-#' @rdname pvs4sar
+#' @rdname psar
 #' @export
-pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
+psar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     stopifnot( is.matrix(x) )
     stopifnot( all( abs(rowSums(w) - 1.0) <= 1e-12 ) )
     stopifnot( all(w >= 0.0) )
@@ -154,16 +155,16 @@ pvs4sar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
     flag[idx] <- TRUE
     obj[["flag"]] <- flag
 
-    class(obj) <- "pvs4sar"
+    class(obj) <- "psar"
     return(obj)
 }
 
 
 
 
-#' @rdname pvs4sar
+#' @rdname psar
 #' @export
-pvs4sar_lagsarlm <- function(
+plagsarlm <- function(
     formula, data = list(), listw, na.action, Durbin, type,
     method = "eigen", quiet = NULL, zero.policy = NULL, interval = NULL,
     tol.solve = .Machine$double.eps, trs = NULL, control = list(),
