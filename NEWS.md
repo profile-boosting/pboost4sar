@@ -1,3 +1,9 @@
+# pboost4sar 0.6.1 (2026-01-15)
+
+* add attrubite `minusloglik` in `get_rho()`, and improve `psar()` acccordingly.
+
+
+
 # pboost4sar 0.6.0 (2026-01-14)
 
 * rename the package as `pboost4sar`.

@@ -38,5 +38,9 @@ get_rho <- function(x, y, w) {
         0.5*NROW(x) * log(sig2.hat) - log(det(A.rho))
     }
 
-    optimize(minusloglik, c(-1, 1))$minimum
+    # return(optimize(minusloglik, c(-1, 1))$minimum)
+    rho.min <- optimize(minusloglik, c(-1, 1))
+    egg <- rho.min$minimum
+    attr(egg, "minusloglik") <- rho.min$objective
+    return(egg)
 }

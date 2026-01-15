@@ -97,12 +97,14 @@ psar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
         stopifnot( is.matrix(x) )
 
         rho.hat  <- get_rho(x, y, w)
-        A.rho    <- diag(NROW(x)) - rho.hat * w
-        y.tilde  <- A.rho %*% y
+        # A.rho    <- diag(NROW(x)) - rho.hat * w
+        # y.tilde  <- A.rho %*% y
+        y.tilde <- y - rho.hat * (w %*% y)
         beta.hat <- coef(lm.fit(x, y.tilde, singular.ok = FALSE))
         err      <- y.tilde - x %*% beta.hat
         sig2.hat <- mean( err^2 )
-        BIC      <- n * log(sig2.hat) - 2*log(det(A.rho)) + log(NROW(x)) * sum(NCOL(x))
+        # BIC      <- n * log(sig2.hat) - 2*log(det(A.rho)) + log(NROW(x)) * sum(NCOL(x))
+        BIC      <- 2 * attr(rho.hat, "minusloglik") + log(NROW(x)) * sum(NCOL(x))
         EBIC <- BIC + 2.0 * ebic.r * lchoose(p, NCOL(x))
 
         list(
