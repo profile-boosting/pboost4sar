@@ -100,6 +100,8 @@ psar <- function(x, y, w, maxK = NULL, keep = NULL, verbose = FALSE) {
         # A.rho    <- diag(NROW(x)) - rho.hat * w
         # y.tilde  <- A.rho %*% y
         y.tilde <- y - rho.hat * (w %*% y)
+        # cA <- chol(crossprod(x))
+        # beta.hat <- drop(backsolve(cA, backsolve(cA, crossprod(X, y.tilde), transpose=TRUE)))
         beta.hat <- coef(lm.fit(x, y.tilde, singular.ok = FALSE))
         err      <- y.tilde - x %*% beta.hat
         sig2.hat <- mean( err^2 )
