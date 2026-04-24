@@ -3,6 +3,7 @@ Title: Profiled Variable Selection for Spatial Auto-Regressive Model
 Version: 0.6.2
 Authors@R: 
     person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre", "cph"))
+Maintainer: Zengchao Xu <zengc.xu@aliyun.com>
 Description: Profiled variable selection for spatial auto-regressive model.
 License: GPL (>= 3)
 Encoding: UTF-8
