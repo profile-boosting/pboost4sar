@@ -1,3 +1,8 @@
+# pboost4sar 0.6.2 (2026-04-22)
+
+* add `forward-sar.R`.
+
+
 # pboost4sar 0.6.1 (2026-01-15)
 
 * add attrubite `minusloglik` in `get_rho()`, and improve `psar()` acccordingly.

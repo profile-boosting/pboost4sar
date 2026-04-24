@@ -4,12 +4,12 @@
 \name{pboost4sar-package}
 \alias{pboost4sar}
 \alias{pboost4sar-package}
-\title{pboost4sar: Profiled Variable Selection (profile boosting) for Spatial Auto-Regressive Model}
+\title{pboost4sar: Profiled Variable Selection for Spatial Auto-Regressive Model}
 \description{
-Profiled variable selection (profile boosting) for spatial auto-regressive (SAR) model.
+Profiled variable selection for spatial auto-regressive model.
 }
 \author{
-\strong{Maintainer}: Zengchao Xu \email{zengc.xu@aliyun.com}
+\strong{Maintainer}: Zengchao Xu \email{zengc.xu@aliyun.com} [copyright holder]
 
 }
 \keyword{internal}

@@ -1,9 +1,9 @@
 Package: pboost4sar
-Title: Profiled Variable Selection (profile boosting) for Spatial Auto-Regressive Model
-Version: 0.6.1
+Title: Profiled Variable Selection for Spatial Auto-Regressive Model
+Version: 0.6.2
 Authors@R: 
-    person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre"))
-Description: Profiled variable selection (profile boosting) for spatial auto-regressive (SAR) model.
+    person("Zengchao", "Xu", , "zengc.xu@aliyun.com", role = c("aut", "cre", "cph"))
+Description: Profiled variable selection for spatial auto-regressive model.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
