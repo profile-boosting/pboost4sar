@@ -4,11 +4,10 @@
 
 ## Installation
 
-You can install the development version of pboost4sar like so:
-
+From Github:
 ``` r
 library(remotes)
-install_git("https://github.com/paradoxical-rhapsody/pboost4sar.git")
+install_git("https://github.com/profile-boosting/pboost4sar.git")
 ```
 
 
