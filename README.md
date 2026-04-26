@@ -5,9 +5,9 @@
 ## Installation
 
 From Github:
-``` r
+```r
 library(remotes)
-install_git("https://github.com/profile-boosting/pboost4sar.git")
+install_github("profile-boosting/pboost4sar")
 ```
 
 
@@ -17,6 +17,6 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(pboost4sar)
-example(psar)
+help(, pboost4sar)
 ```
 
